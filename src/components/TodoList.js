@@ -90,8 +90,8 @@ function TodoList({
               key={todo.id}
               todo={todo}
               onToggle={onToggleTodo}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
+              onDelete={onDeleteTodo}
+              onUpdate={onUpdateTodo}
             />
           ))}
         </div>

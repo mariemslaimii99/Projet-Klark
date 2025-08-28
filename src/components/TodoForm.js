@@ -14,7 +14,7 @@ function TodoForm({ onAdd }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formData[name] = value;
-    setFormData(formData);
+    setFormData({ ...formData, [name]: value });
   };
 
   const validateForm = () => {
@@ -34,14 +34,14 @@ function TodoForm({ onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (validateForm()) {
-      onAdd({
-        title: formData.title,
-        description: formData.description,
-        priority: formData.priority,
-        dueDate: formData.dueDate,
-      });
+       onAdd(formData);    
+  setFormData({      
+    title: "",
+    description: "",
+    priority: "medium",
+    dueDate: "",
+  });
     }
   };
 

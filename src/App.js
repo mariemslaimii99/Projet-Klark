@@ -5,11 +5,11 @@ import TodoList from "./components/TodoList";
 import TodoStats from "./components/TodoStats";
 
 function App() {
-  const [todos, setTodos] = useState(undefined);
+  const [todos, setTodos] = useState([]);
 
-  const [loading, setLoading] = useState(undefined);
+  const [loading, setLoading] = useState(false);
 
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchTodos();
@@ -19,8 +19,9 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://jsonplaceholder.typicode.com/todosss"
+        "https://jsonplaceholder.typicode.com/todos"
       );
+
       const data = await response.json();
       setTodos(data.slice(0, 5));
     } catch (err) {
@@ -30,30 +31,43 @@ function App() {
     }
   };
 
-  const addTodo = (text) => {
+  const addTodo = (todo) => {
     const newTodo = {
+      ...todo,
       id: Date.now(),
-      title: text,
       completed: false,
     };
-    todos.push(newTodo);
-    setTodos(todos);
+    setTodos([...todos, newTodo]);
   };
 
   const toggleTodo = (id) => {
-    const todo = todos.find((t) => t.id === id);
-    if (todo) {
-      todo.completed = !todo.completed;
-      setTodos([...todos]);
+    const updatedlist = todos.map((t) => {if (t.id === id) {
+      t.completed = !t.completed; 
     }
+    return t;
+  });
+    setTodos(updatedlist);
   };
 
-  const deleteTodo = (id) => {};
+  const deleteTodo = (id) => {
+    const updatedlist = todos.filter((t)=> t.id !== id);
+    setTodos(updatedlist);
+  };
 
-  const updateTodo = (id, newText) => {};
+  const updateTodo = (id, newText) => {
+    const updatedlist = todos.map((t)=> 
+    t.id=== id? {...t, title : newText}: t
+    );
+
+    setTodos(updatedlist);
+  };
 
   if (loading) {
     return <div>Chargement...</div>;
+  }
+
+  if (error) {
+    return <div> Erreur : {error}</div>
   }
 
   return (
@@ -68,9 +82,9 @@ function App() {
 
         <TodoList
           todos={todos}
-          onToggle={toggleTodo}
-          onDelete={deleteTodo}
-          onUpdate={updateTodo}
+          onToggleTodo={toggleTodo}
+          onDeleteTodo={deleteTodo}
+          onUpdateTodo={updateTodo}
         />
 
         <TodoStats todos={todos} />
